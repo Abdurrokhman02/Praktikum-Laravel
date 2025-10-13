@@ -1,0 +1,67 @@
+<?php
+
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified', 'RoleCheck:admin'])->name('dashboard');
+
+Route::middleware('auth', 'verified', 'RoleCheck:admin')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::get('/product/create', [ProductController::class, 'create'])->name('product-create');
+Route::post('/product', [ProductController::class, 'store'])->name('product-store');
+
+// Route::get(uri: '/product', action: [ProductController::class, 'index'])->name(name: 'product-index');
+Route::get('/product', [ProductController::class, 'index'])->name('product-index');
+Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product-edit');
+Route::put('/product/{id}', [ProductController::class, 'update'])->name('product-update');
+
+// Route::get('/product', [ProductController::class, 'index']);
+
+require __DIR__.'/auth.php';
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+
+// // route GET sederhana
+// Route::get('/hello', function () {
+//     return 'Hello, World!';
+// });
+
+// // route GET dengan parameter
+// Route::get('/user/{id}', function ($id) {
+//     return "User ID: " . $id;
+// });
+
+// // route GET dengan parameter opsional
+// Route::get('/user/{name?}', function ($name = 'Guest') {
+//     return "Helloow " . $name;
+// });
+
+// Route::prefix('admin')->group(function () {
+//     Route::get('/dashboard', function () {
+//         return 'Admin Dashboard';
+// });
+//     Route::get('/profile', function () {
+//         return 'Admin Profile';
+//     });
+// });
+
+
+// Route::get('/dashboard', function () {
+//         return 'Welcome to the Dashboard!!!';
+//     })->middleware('auth');
+
+// Route::resource('post', PostController::class);
