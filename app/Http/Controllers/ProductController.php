@@ -10,10 +10,18 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // return view('layouts-percobaan.app');
-        $data = Product::all();
+        $query = Product::query();
+
+        if ($request->has('search') && $request->search != ''){
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('product_name', 'like', '%' . $search . '%');
+            });
+        }
+        $data = $query->paginate(2);
         return view('master-data.product-master.index-product', compact('data'));
     }
 
@@ -49,7 +57,8 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = Product::findOrFail($id);
+        return view('master-data.product-master.detail-product', compact('product'));
     }
 
     /**
@@ -84,7 +93,7 @@ class ProductController extends Controller
             'qty' => $request->qty,
             'producer' => $request->producer,
         ]);
-        return redirect()->back()->with('success', 'Product updated successfully');
+        return redirect()->route('index-product')->with('success', 'Product updated successfully');
     }
 
     /**
@@ -92,6 +101,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $product = Product::find($id);
+        if ($product) {
+            $product->delete();
+            return redirect()->back()->with('success', 'Product berhasil dihapus');
+        }
+        return redirect()->back()->with('error', 'Product tidak ditemukan');
     }
 }

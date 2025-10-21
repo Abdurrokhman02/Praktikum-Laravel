@@ -69,12 +69,12 @@
         </div>
     </div>
 
-    <!-- Data master Dropdown
+    <!-- Data master Dropdown -->
     <div class="hidden sm:flex sm:items-center sm:ms-6">
 
-        Form model dan penyimpanan data
+     <!--   Form model dan penyimpanan data
 
-        <x-dropdown align="right" width="48">
+        {{-- <x-dropdown align="right" width="48">
             <x-slot name="trigger">
                 <button class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none">
                     <div>Data Master</div>
@@ -94,7 +94,7 @@
                 </x-dropdown-link>
             </x-slot>
         </x-dropdown>
-    </div> -->
+    </div> --}}-->
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
