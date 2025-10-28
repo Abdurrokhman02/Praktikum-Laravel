@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -12,17 +12,30 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        // return view('layouts-percobaan.app');
         $query = Product::query();
 
-        if ($request->has('search') && $request->search != ''){
+        if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('product_name', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('product_name', 'like', '%'.$search.'%');
             });
         }
+
+        $validSortColumns = ['id', 'product_name', 'unit', 'type', 'information', 'qty', 'producer'];
+        $sortBy = $request->input('sort_by', 'id');
+        $sortDir = strtolower($request->input('sort_dir', 'asc'));
+        if (! in_array($sortBy, $validSortColumns)) {
+            $sortBy = 'id';
+        }
+        if (! in_array($sortDir, ['asc', 'desc'])) {
+            $sortDir = 'asc';
+        }
+
+        $query->orderBy($sortBy, $sortDir);
+
         $data = $query->paginate(2);
-        return view('master-data.product-master.index-product', compact('data'));
+
+        return view('master-data.product-master.index-product', compact('data', 'sortBy', 'sortDir'));
     }
 
     /**
@@ -30,7 +43,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view("master-data.product-master.create-product");
+        return view('master-data.product-master.create-product');
     }
 
     /**
@@ -49,7 +62,7 @@ class ProductController extends Controller
 
         Product::create($validasi_data);
 
-        return redirect()->back()->with('success', 'Product created successfully');
+        return redirect()->route('product-index')->with('success', 'Product created successfully');
     }
 
     /**
@@ -58,6 +71,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         $product = Product::findOrFail($id);
+
         return view('master-data.product-master.detail-product', compact('product'));
     }
 
@@ -67,6 +81,7 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         $product = Product::findOrFail($id);
+
         return view('master-data.product-master.edit-product', compact('product'));
     }
 
@@ -93,7 +108,8 @@ class ProductController extends Controller
             'qty' => $request->qty,
             'producer' => $request->producer,
         ]);
-        return redirect()->route('index-product')->with('success', 'Product updated successfully');
+
+        return redirect()->route('product-index')->with('success', 'Product updated successfully');
     }
 
     /**
@@ -104,8 +120,10 @@ class ProductController extends Controller
         $product = Product::find($id);
         if ($product) {
             $product->delete();
+
             return redirect()->back()->with('success', 'Product berhasil dihapus');
         }
+
         return redirect()->back()->with('error', 'Product tidak ditemukan');
     }
 }
