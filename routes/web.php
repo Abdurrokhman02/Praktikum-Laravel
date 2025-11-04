@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -26,10 +25,7 @@ Route::get('/product', [ProductController::class, 'index'])->name('product-index
 Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product-delete');
 Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product-edit');
 Route::put('/product/{id}', [ProductController::class, 'update'])->name('product-update');
-
-
+Route::get('/product/export/excel', [ProductController::class, 'exportExcel'])->name('product-export-excel');
+Route::get('/product/export/pdf', [ProductController::class, 'exportPDF'])->name('product-export-pdf');
 
 require __DIR__.'/auth.php';
-
-
-
