@@ -15,7 +15,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::query()->with('supplier');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -36,7 +36,9 @@ class ProductController extends Controller
 
         $query->orderBy($sortBy, $sortDir);
 
-        $data = $query->paginate(2);
+        $data = $query->paginate(10);
+
+        return $data;
 
         return view('master-data.product-master.index-product', compact('data', 'sortBy', 'sortDir'));
     }
